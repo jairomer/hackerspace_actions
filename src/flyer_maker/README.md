@@ -1,6 +1,8 @@
 # Flyer Maker
 
-This is an utility that leverages an stable difusion endpoint to generate fliers for events.
+This is a controller that leverages an stable difusion endpoint to generate fliers for events.
+
+The objective of creating this module is to decouple it from the view, so that it can be integrated on other applications.
 
 ## Image sizes
 

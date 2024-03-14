@@ -4,9 +4,9 @@ import os
 import base64
 from PIL import Image
 
-from flyer import Flyer
+from . import flyer
 
-async def get_images(
+def get_images(
         url="https://1111.makespacemadrid.org",
         prompt="puppy dog",
         img_size=(512, 512),
@@ -21,8 +21,8 @@ async def get_images(
 
     payload = {
       "prompt": prompt,
-      "width": img_size[Flyer.WIDTH],
-      "height": img_size[Flyer.HEIGH],
+      "width": img_size[flyer.Flyer.WIDTH],
+      "height": img_size[flyer.Flyer.HEIGH],
       "batch_size": batch_size,
     }
     response = None
@@ -43,16 +43,17 @@ async def get_images(
 
     images = []
     for image_data in r['images']:
+        tmp_file = "/tmp/{os.getpid()}_out.png"
         try:
-            os.remove("/tmp/output.png")
+            os.remove(tmp_file)
         except Exception as e:
             # Nothing to remove
             pass
 
         # An ugly hack to convert bytes to Pil.Image's
-        with open("/tmp/output.png", "wb") as f:
+        with open(tmp_file, "wb") as f:
             f.write(base64.b64decode(image_data))
-        with Image.open("/tmp/output.png").convert("RGBA") as image:
+        with Image.open(tmp_file).convert("RGBA") as image:
             images.append(image)
-        os.remove("/tmp/output.png")
+        os.remove(tmp_file)
     return images
